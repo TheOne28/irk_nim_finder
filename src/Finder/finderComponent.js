@@ -1,22 +1,20 @@
-import React from 'react';
+import {React, useState} from 'react';
 import { findAll } from './finder';
 
 
 export function HasilPrediksi(props){
     return(
     <tr>
+        <td>{props.nimTPB}</td>
         <td>{props.nim}</td>
         <td>{props.nama}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-
     </tr>
     );
 };
 
 export function SearchBar(props){
+    const [hasil, setHasil] = useState();
+
     function onSubmit(e){
         e.preventDefault();
 
@@ -26,8 +24,10 @@ export function SearchBar(props){
     function onChangeInput(e){
         const splitted = e.target.value.split(" ")
         
-        findAll(splitted)
+        const matchData = findAll(splitted)
         
+        setHasil(matchData)
+
     }
 
     return(
@@ -37,6 +37,7 @@ export function SearchBar(props){
                 <label>Enter config to find: </label>
                 <input type="text" onChange={onChangeInput}></input>
             </form>
+            
         </div>
     );
 };
