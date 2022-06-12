@@ -13,21 +13,27 @@ export function HasilPrediksi(props){
 };
 
 export function SearchBar(props){
-    const [hasil, setHasil] = useState();
+    const [hasil, setHasil] = useState([])
+    const [input, setInput] = useState("")
 
     function onSubmit(e){
         e.preventDefault();
+        console.log(e.target)
 
-        // console.log(e);
+        const splitted = input.split(" ")
+        const matchData = findAll(splitted)
+
+        setHasil(matchData)
     };
 
     function onChangeInput(e){
-        const splitted = e.target.value.split(" ")
-        
-        const matchData = findAll(splitted)
-        
-        setHasil(matchData)
+        setInput(e.target.value)
+    }
 
+    function hasilPrediksiList(){
+        return hasil.map(prediksi => {
+            return <HasilPrediksi nimTPB={prediksi[1]} nim={prediksi[2]} nama={prediksi[0]}/>
+        })
     }
 
     return(
@@ -37,7 +43,21 @@ export function SearchBar(props){
                 <label>Enter config to find: </label>
                 <input type="text" onChange={onChangeInput}></input>
             </form>
-            
+            <div>
+                <h3>Hasil Pencarian</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>nimTPB</th>
+                            <th>nim</th>
+                            <th>Nama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {hasilPrediksiList()}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

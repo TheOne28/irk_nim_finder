@@ -24,19 +24,21 @@ export function findAll(toFind){
         }
     });
     const all = []
-    if(onlyNumber.length() !== 0){
+    if(onlyNumber.length !== 0){
         const nimSuccess = findByNim(onlyNumber)
 
         nimSuccess.forEach(data =>{
-            all.append(nimSuccess)
+            all.push(data)
         })
     }
     
-    if(onlyString.length() !== 0){
+    if(onlyString.length !== 0){
         const nameSuccess = findByName(onlyString)
         
         nameSuccess.forEach(data =>{
-            if(all.findIndex(data) !== -1){
+            if(all.findIndex(each =>{
+                return each[0] === data[0] && each[1] === data[1] && each[2] === data[2]
+            }) === -1){
                 all.push(data)
             }
         })
