@@ -17,6 +17,10 @@ export function regexName(toTest, name){
     return new RegExp(`${name}`, 'i').test(toTest)
 }
 
+export function regexJurfak(toTest, jurfak){
+    return new RegExp(`^${jurfak}`).test(toTest)
+}
+
 export function regexKodeJurusan(toTest, jurusan){
     return new RegExp(`^${jurusan}$`, 'i').test(toTest)
 }

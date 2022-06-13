@@ -32,7 +32,7 @@ export function SearchBar(props){
 
     function hasilPrediksiList(){
         return hasil.map(prediksi => {
-            return <HasilPrediksi nimTPB={prediksi[1]} nim={prediksi[2]} nama={prediksi[0]}/>
+            return <HasilPrediksi  key={prediksi[1]} nimTPB={prediksi[1]} nim={prediksi[2]} nama={prediksi[0]}/>
         })
     }
 

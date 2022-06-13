@@ -13,20 +13,29 @@ export function preprocess(allData){
     let nim = -1
     let nama = []
     let data = {
-        'Jurfak' : -1,
-        'Angkatan' : - 1
+        'Jurusan' : [],
+        'Fakultas' : [],
+        'Angkatan' : ""
     }
 
     for(let i = 0; i < allData.length;){
-        if(isString(allData[i])){
+        if(isNumber(allData[i])){
+            nim = allData[i]
+            i ++
+        }else if(isString(allData[i])){
             let kode = isJurfak(allData[i])
             let kode2 = isJurfak(allData[i], false)
-
-            if((kode === -1 && kode2 === -1) || i !== allData.length - 1){
+            
+            console.log(`Kode ${kode}`)
+            console.log(`Kode2 ${kode2}`)
+            
+            if((kode.length === 0 && kode2.length === 0) || i === allData.length - 1){
+                console.log(i)
                 nama.push(allData[i])
                 i ++
-            }else if(kode !== -1 || kode2 !== -1){
-                data.Jurfak = (kode === -1? kode2 : kode)
+            }else if(kode.length !== 0 || kode2.length !== 0){
+                data.Jurusan = kode
+                data.Fakultas = kode2
 
                 if(isNumber(allData[i + 1])){
                     data.Angkatan = allData[i + 1]
@@ -35,27 +44,28 @@ export function preprocess(allData){
                     i ++
                 }
             }
-        }else if(isNumber(allData[i])){
-            nim = allData[i]
-        }else{
+        }
+        else{
             continue
         }
     }
 
+    const converted = convert(data)   
+
     return {
         'nim' : nim,
         'nama' : nama,
-        'data' : data
+        'nimConverted' : converted
     }
 }
 
 function isJurfak(toCheck, isFak = true){
-    let codeConvertion = -1
+    let codeConvertion = []
 
     let kodeJurfak = kodeJurusan
     let listJurFak = listJurusan
 
-    if(! isFak){
+    if(!isFak){
         kodeJurfak = kodeFakultas
         listJurFak = listFakultas
     }
@@ -63,17 +73,15 @@ function isJurfak(toCheck, isFak = true){
     for(let kode in kodeJurfak){
         if(kodeJurfak.hasOwnProperty(kode)){
             if(regexKodeJurusan(toCheck, kode)){
-                codeConvertion = kodeJurfak[kode]
-                return codeConvertion
+                codeConvertion.push(kodeJurfak[kode])
             }
         }
     }
 
     for(let kode in listJurFak){
         if(listJurFak.hasOwnProperty(kode)){
-            if(regexListJurusan(listJurFak[kode], toCheck)){
-                codeConvertion = kode
-                return codeConvertion
+            if(regexListJurusan(listJurFak[kode], toCheck) && codeConvertion.indexOf(kode) === -1){
+                codeConvertion.push(kode)
             }
         }
     }
@@ -81,6 +89,24 @@ function isJurfak(toCheck, isFak = true){
     return codeConvertion
 }
 
-function isFakultas(toCheck){
+function convert(data){
+    if(data.Angkatan === ""){
+        return [...new Set([...data.Jurusan, data.Fakultas])]
+    }else if(data.Fakultas.length === 0 && data.Jurusan.length === 0){
+        return []
+    }else if(data.Fakultas.length !== 0){
+        let added = []
 
+        data.Fakultas.forEach(fak => {
+            added.push(fak.concat(data.Angkatan))
+        });
+        return added
+    }else{
+        let added = []
+
+        data.Jurusan.forEach(fak => {
+            added.push(fak.concat(data.Angkatan))
+        });
+        return added
+    }
 }

@@ -4,27 +4,70 @@ import { preprocess } from './Preprocess'
 
 import {
     regexName, 
-    regexNim
+    regexNim,
+    regexJurfak
  } from './regex'
 
 export function findAll(toFind){
+    console.log("topFind")
+    console.log(toFind)
     const afterPreprocess = preprocess(toFind)
-    const all = []
-    
+    console.log(afterPreprocess)
+    let all = []
+
+    if(afterPreprocess.nama.length === 0){
+        if(afterPreprocess.nim === -1){
+            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+        }else{
+            all = findByNim(afterPreprocess.nim, dataMahasiswa)
+            if(afterPreprocess.nimConverted.length !== 0){
+                all =findByJurfak(afterPreprocess.nimConverted, all)
+            }
+        }
+    }else if(afterPreprocess.nim === -1){
+        if(afterPreprocess.nimConverted.length === 0){
+            all = findByJurfak(afterPreprocess.nama, dataMahasiswa)
+        }else{
+            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+        }
+
+    }else if(afterPreprocess.nimConverted.length === 0){
+        if(afterPreprocess.nim === -1){
+            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+        }else{
+            all = findByJurfak(afterPreprocess.nim, dataMahasiswa)
+
+            if(afterPreprocess.nama.length !== 0){
+                all = findByName(afterPreprocess.nama, all)
+            }
+        }
+    }
+    console.log(all)
     return all
 }
 
-function findByNim(Nim){
+function findByNim(Nim, data){
     let match = []    
     
-    dataMahasiswa.forEach(mhs =>{
+    data.forEach(mhs =>{
+        if(regexNim(mhs[1], Nim) || regexNim(mhs[2], Nim)){
+             match.push(mhs)
+        }
+    })
+
+    return match
+}
+
+function findByName(Name, data){
+    let match = []
+
+    data.forEach(mhs => {
         let done = false
-        Nim.forEach(nim => {
-            if(regexNim(mhs[1], nim) || regexNim(mhs[2], nim)){
-                if(!done){
-                    match.push(mhs)
-                    done = true
-                }
+
+        Name.forEach(name => {
+            if(regexName(mhs[0], name) && !done){
+                match.push(mhs)
+                done = true
             }
         })
     })
@@ -32,15 +75,16 @@ function findByNim(Nim){
     return match
 }
 
-function findByName(Name){
+function findByJurfak(jurfak, data){
     let match = []
 
-    dataMahasiswa.forEach(mhs => {
+    data.forEach(mhs => {
         let done = false
 
-        Name.forEach(name => {
-            if(regexName(mhs[0], name) && !done){
+        jurfak.forEach(jur => {
+            if((regexJurfak(mhs[1], jur) || regexJurfak(mhs[2], jur)) && !done){
                 match.push(mhs)
+                done = true
             }
         })
     })
