@@ -1,49 +1,16 @@
 import dataMahasiswa from '../data/data_13_21.json'
-import kodeFakultas from '../data/kode_fakultas.json'
-import kodeJurusan from '../data/kode_jurusan.json'
-import listFakultas from '../data/list_fakultas.json'
-import listJurusan from '../data/list_jurusan.json'
+
+import { preprocess } from './Preprocess'
+
 import {
-    isNumber,
-    isString, 
     regexName, 
     regexNim
  } from './regex'
 
 export function findAll(toFind){
-    const onlyNumber = []
-    const onlyString = []
-
-    toFind.forEach(element => {
-        if(isNumber(element)){
-            onlyNumber.push(element)
-        }else if(isString(element)){
-            onlyString.push(element)
-        }else{
-            console.log("Incorrect input")
-        }
-    });
+    const afterPreprocess = preprocess(toFind)
     const all = []
-    if(onlyNumber.length !== 0){
-        const nimSuccess = findByNim(onlyNumber)
-
-        nimSuccess.forEach(data =>{
-            all.push(data)
-        })
-    }
     
-    if(onlyString.length !== 0){
-        const nameSuccess = findByName(onlyString)
-        
-        nameSuccess.forEach(data =>{
-            if(all.findIndex(each =>{
-                return each[0] === data[0] && each[1] === data[1] && each[2] === data[2]
-            }) === -1){
-                all.push(data)
-            }
-        })
-    }
-
     return all
 }
 

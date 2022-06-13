@@ -12,39 +12,75 @@ import {
 export function preprocess(allData){
     let nim = -1
     let nama = []
-    let jurusan = {
-        'Jurusan' : - 1,
-        'Fakultas' : -1,
+    let data = {
+        'Jurfak' : -1,
         'Angkatan' : - 1
     }
 
-    allData.forEach(data => {
-        if(isString(data)){
-            
+    for(let i = 0; i < allData.length;){
+        if(isString(allData[i])){
+            let kode = isJurfak(allData[i])
+            let kode2 = isJurfak(allData[i], false)
+
+            if((kode === -1 && kode2 === -1) || i !== allData.length - 1){
+                nama.push(allData[i])
+                i ++
+            }else if(kode !== -1 || kode2 !== -1){
+                data.Jurfak = (kode === -1? kode2 : kode)
+
+                if(isNumber(allData[i + 1])){
+                    data.Angkatan = allData[i + 1]
+                    i += 2
+                }else{ 
+                    i ++
+                }
+            }
+        }else if(isNumber(allData[i])){
+            nim = allData[i]
+        }else{
+            continue
         }
-    })
+    }
+
+    return {
+        'nim' : nim,
+        'nama' : nama,
+        'data' : data
+    }
 }
 
-function isJurusan(toCheck){
+function isJurfak(toCheck, isFak = true){
     let codeConvertion = -1
 
-    for(var kode in kodeJurusan){
-        if(kodeJurusan.hasOwnProperty(kode)){
+    let kodeJurfak = kodeJurusan
+    let listJurFak = listJurusan
+
+    if(! isFak){
+        kodeJurfak = kodeFakultas
+        listJurFak = listFakultas
+    }
+
+    for(let kode in kodeJurfak){
+        if(kodeJurfak.hasOwnProperty(kode)){
             if(regexKodeJurusan(toCheck, kode)){
-                codeConvertion = kodeJurusan[kode]
+                codeConvertion = kodeJurfak[kode]
                 return codeConvertion
             }
         }
     }
 
-    for(var code in listJurusan){
-        if(listJurusan.hasOwnProperty(code)){
-            if(regexListJurusan(listJurusan[kode], toCheck)){
-                codeConvertion = code
+    for(let kode in listJurFak){
+        if(listJurFak.hasOwnProperty(kode)){
+            if(regexListJurusan(listJurFak[kode], toCheck)){
+                codeConvertion = kode
                 return codeConvertion
             }
         }
     }
 
     return codeConvertion
+}
+
+function isFakultas(toCheck){
+
 }
