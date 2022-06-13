@@ -26,18 +26,22 @@ export function preprocess(allData){
             let kode = isJurfak(allData[i])
             let kode2 = isJurfak(allData[i], false)
                
-            if((kode.length === 0 && kode2.length === 0) || i === allData.length - 1){
+            if((kode.length === 0 && kode2.length === 0)){
                 nama.push(allData[i])
                 i ++
             }else if(kode.length !== 0 || kode2.length !== 0){
                 data.Jurusan = kode
                 data.Fakultas = kode2
-
-                if(isNumber(allData[i + 1])){
-                    data.Angkatan = allData[i + 1]
-                    i += 2
-                }else{ 
+                
+                if(i === allData.length - 1){
                     i ++
+                }else{
+                    if(isNumber(allData[i + 1])){
+                        data.Angkatan = allData[i + 1]
+                        i += 2
+                    }else{ 
+                        i ++
+                    }
                 }
             }
         }
@@ -90,7 +94,7 @@ function convert(data){
     if(data.Fakultas.length === 0 && data.Jurusan.length === 0){
         return []
     }else if(data.Angkatan === ""){
-        return [...new Set([...data.Jurusan, data.Fakultas])]
+        return [...new Set([...data.Jurusan, data.Fakultas])].filter(element => element.length !== 0)
     }else if(data.Fakultas.length !== 0){
         let added = []
 

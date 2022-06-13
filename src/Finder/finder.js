@@ -12,10 +12,21 @@ export function findAll(toFind){
     console.log("topFind")
     console.log(toFind)
     const afterPreprocess = preprocess(toFind)
-    console.log(afterPreprocess.nimConverted)
+    console.log(afterPreprocess)
     let all = []
 
-    if(afterPreprocess.nama.length === 0){
+    if(afterPreprocess.nimConverted.length === 0){
+        if(afterPreprocess.nim === -1){
+            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+        }else{
+            all = findByJurfak(afterPreprocess.nim, dataMahasiswa)
+
+            if(afterPreprocess.nama.length !== 0){
+                all = findByName(afterPreprocess.nama, all)
+            }
+        }
+    }
+    else if(afterPreprocess.nama.length === 0){
         if(afterPreprocess.nim === -1){
             all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
         }else{
@@ -31,16 +42,6 @@ export function findAll(toFind){
             all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
         }
 
-    }else if(afterPreprocess.nimConverted.length === 0){
-        if(afterPreprocess.nim === -1){
-            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
-        }else{
-            all = findByJurfak(afterPreprocess.nim, dataMahasiswa)
-
-            if(afterPreprocess.nama.length !== 0){
-                all = findByName(afterPreprocess.nama, all)
-            }
-        }
     }else{
         all = findByName(afterPreprocess.nama, dataMahasiswa)
         all = findByJurfak(afterPreprocess.nimConverted, all)
