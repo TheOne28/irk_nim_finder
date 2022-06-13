@@ -1,6 +1,6 @@
 import dataMahasiswa from '../data/data_13_21.json'
 
-import { preprocess } from './Preprocess'
+import { preprocess, complete} from './Preprocess'
 
 import {
     regexName, 
@@ -12,7 +12,7 @@ export function findAll(toFind){
     console.log("topFind")
     console.log(toFind)
     const afterPreprocess = preprocess(toFind)
-    console.log(afterPreprocess)
+    console.log(afterPreprocess.nimConverted)
     let all = []
 
     if(afterPreprocess.nama.length === 0){
@@ -26,7 +26,7 @@ export function findAll(toFind){
         }
     }else if(afterPreprocess.nim === -1){
         if(afterPreprocess.nimConverted.length === 0){
-            all = findByJurfak(afterPreprocess.nama, dataMahasiswa)
+            all = findByName(afterPreprocess.nama, dataMahasiswa)
         }else{
             all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
         }
@@ -41,6 +41,10 @@ export function findAll(toFind){
                 all = findByName(afterPreprocess.nama, all)
             }
         }
+    }else{
+        all = findByName(afterPreprocess.nama, dataMahasiswa)
+        all = findByJurfak(afterPreprocess.nimConverted, all)
+        all = findByNim(afterPreprocess.nim, all)
     }
     console.log(all)
     return all
@@ -51,7 +55,7 @@ function findByNim(Nim, data){
     
     data.forEach(mhs =>{
         if(regexNim(mhs[1], Nim) || regexNim(mhs[2], Nim)){
-             match.push(mhs)
+             match.push(complete(mhs))
         }
     })
 
@@ -66,7 +70,7 @@ function findByName(Name, data){
 
         Name.forEach(name => {
             if(regexName(mhs[0], name) && !done){
-                match.push(mhs)
+                match.push(complete(mhs))
                 done = true
             }
         })
@@ -83,7 +87,7 @@ function findByJurfak(jurfak, data){
 
         jurfak.forEach(jur => {
             if((regexJurfak(mhs[1], jur) || regexJurfak(mhs[2], jur)) && !done){
-                match.push(mhs)
+                match.push(complete(mhs))
                 done = true
             }
         })

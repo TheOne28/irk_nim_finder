@@ -25,12 +25,8 @@ export function preprocess(allData){
         }else if(isString(allData[i])){
             let kode = isJurfak(allData[i])
             let kode2 = isJurfak(allData[i], false)
-            
-            console.log(`Kode ${kode}`)
-            console.log(`Kode2 ${kode2}`)
-            
+               
             if((kode.length === 0 && kode2.length === 0) || i === allData.length - 1){
-                console.log(i)
                 nama.push(allData[i])
                 i ++
             }else if(kode.length !== 0 || kode2.length !== 0){
@@ -51,7 +47,8 @@ export function preprocess(allData){
     }
 
     const converted = convert(data)   
-
+    console.log(data)
+    console.log(`Converted ${converted.length}`)
     return {
         'nim' : nim,
         'nama' : nama,
@@ -90,10 +87,10 @@ function isJurfak(toCheck, isFak = true){
 }
 
 function convert(data){
-    if(data.Angkatan === ""){
-        return [...new Set([...data.Jurusan, data.Fakultas])]
-    }else if(data.Fakultas.length === 0 && data.Jurusan.length === 0){
+    if(data.Fakultas.length === 0 && data.Jurusan.length === 0){
         return []
+    }else if(data.Angkatan === ""){
+        return [...new Set([...data.Jurusan, data.Fakultas])]
     }else if(data.Fakultas.length !== 0){
         let added = []
 
@@ -108,5 +105,19 @@ function convert(data){
             added.push(fak.concat(data.Angkatan))
         });
         return added
+    }
+}
+
+export function complete(toComplete){
+    if(toComplete.length === 5){
+        return toComplete
+    }else if(toComplete.length === 2){
+        toComplete.push("")
+        toComplete.push(listJurusan[toComplete[2].slice(0, 3)])
+        return toComplete
+    }else{
+        toComplete.push(listJurusan[toComplete[2].slice(0, 3)])
+        toComplete.push(listFakultas[toComplete[1].slice(0,3)])
+        return toComplete
     }
 }

@@ -8,6 +8,8 @@ export function HasilPrediksi(props){
         <td>{props.nimTPB}</td>
         <td>{props.nim}</td>
         <td>{props.nama}</td>
+        <td>{props.jurusan}</td>
+        <td>{props.fakultas}</td>
     </tr>
     );
 };
@@ -32,7 +34,7 @@ export function SearchBar(props){
 
     function hasilPrediksiList(){
         return hasil.map(prediksi => {
-            return <HasilPrediksi  key={prediksi[1]} nimTPB={prediksi[1]} nim={prediksi[2]} nama={prediksi[0]}/>
+            return <HasilPrediksi  key={prediksi[1]} nimTPB={prediksi[1]} nim={prediksi[2]} nama={prediksi[0]} jurusan={prediksi[3]} fakultas={prediksi[4]}/>
         })
     }
 
@@ -51,6 +53,8 @@ export function SearchBar(props){
                             <th>nimTPB</th>
                             <th>nim</th>
                             <th>Nama</th>
+                            <th>Jurusan</th>
+                            <th>Fakultas</th>
                         </tr>
                     </thead>
                     <tbody>
