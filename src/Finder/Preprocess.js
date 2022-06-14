@@ -17,7 +17,7 @@ export function preprocess(allData){
         'Fakultas' : [],
         'Angkatan' : ""
     }
-
+    let correct = true
     for(let i = 0; i < allData.length;){
         if(isNumber(allData[i])){
             nim = allData[i]
@@ -45,8 +45,12 @@ export function preprocess(allData){
                 }
             }
         }
-        else{
+        else if(allData[i] === ""){
+            i ++
             continue
+        }else{
+            correct = false
+            break
         }
     }
 
@@ -56,7 +60,8 @@ export function preprocess(allData){
     return {
         'nim' : nim,
         'nama' : nama,
-        'nimConverted' : converted
+        'nimConverted' : converted,
+        'correct' : correct
     }
 }
 
@@ -116,8 +121,9 @@ export function complete(toComplete){
     if(toComplete.length === 5){
         return toComplete
     }else if(toComplete.length === 2){
-        toComplete.push("")
-        toComplete.push(listJurusan[toComplete[2].slice(0, 3)])
+        toComplete.push("-")
+        toComplete.push(listFakultas[toComplete[1].slice(0, 3)])
+        toComplete.push("-")
         return toComplete
     }else{
         toComplete.push(listJurusan[toComplete[2].slice(0, 3)])

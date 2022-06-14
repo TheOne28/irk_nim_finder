@@ -15,11 +15,18 @@ export function findAll(toFind){
     console.log(afterPreprocess)
     let all = []
 
+    if(!afterPreprocess.correct){
+        return {
+            'data' : all,
+            'correct' : false
+        }
+    }
+
     if(afterPreprocess.nimConverted.length === 0){
         if(afterPreprocess.nim === -1){
-            all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+            all = findByName(afterPreprocess.nama, dataMahasiswa)
         }else{
-            all = findByJurfak(afterPreprocess.nim, dataMahasiswa)
+            all = findByNim(afterPreprocess.nim, dataMahasiswa)
 
             if(afterPreprocess.nama.length !== 0){
                 all = findByName(afterPreprocess.nama, all)
@@ -40,6 +47,10 @@ export function findAll(toFind){
             all = findByName(afterPreprocess.nama, dataMahasiswa)
         }else{
             all = findByJurfak(afterPreprocess.nimConverted, dataMahasiswa)
+
+            if(afterPreprocess.nimConverted[0].length !== 3){
+                all = findByName(afterPreprocess.nama, all)
+            }
         }
 
     }else{
@@ -48,7 +59,10 @@ export function findAll(toFind){
         all = findByNim(afterPreprocess.nim, all)
     }
     console.log(all)
-    return all
+    return {
+        'data' : all,
+        'correct' : true
+    }
 }
 
 function findByNim(Nim, data){

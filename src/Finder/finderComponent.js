@@ -1,8 +1,10 @@
 import {React, useState} from 'react';
+import { findRenderedComponentWithType } from 'react-dom/test-utils';
 import { findAll } from './finder';
+import './finderComponent.css'
 
 
-export function HasilPrediksi(props){
+function HasilPrediksi(props){
     return(
     <tr>
         <td>{props.nimTPB}</td>
@@ -17,6 +19,8 @@ export function HasilPrediksi(props){
 export function SearchBar(props){
     const [hasil, setHasil] = useState([])
     const [input, setInput] = useState("")
+    const [done, setDone] = useState(false)
+    const [correct, setCorrect] = useState(false)
 
     function onSubmit(e){
         e.preventDefault();
@@ -25,7 +29,9 @@ export function SearchBar(props){
         const splitted = input.split(" ")
         const matchData = findAll(splitted)
 
-        setHasil(matchData)
+        setHasil(matchData.data)
+        setDone(true)
+        setCorrect(matchData.correct)
     };
 
     function onChangeInput(e){
@@ -40,27 +46,42 @@ export function SearchBar(props){
 
     return(
         <div>
-            <h3 className='Find NIM'>Search Nim</h3>
+            <h3 className="Find-Nim">Another NIM Finder</h3>
             <form onSubmit={onSubmit}>
-                <label>Enter config to find: </label>
-                <input type="text" onChange={onChangeInput}></input>
+                <input type="text" onChange={onChangeInput} placeholder="Contoh: vincent if 20 " ></input>
             </form>
             <div>
-                <h3>Hasil Pencarian</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>nimTPB</th>
-                            <th>nim</th>
-                            <th>Nama</th>
-                            <th>Jurusan</th>
-                            <th>Fakultas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {hasilPrediksiList()}
-                    </tbody>
-                </table>
+            {done &&
+            <>  {correct && 
+                    <>
+                    {hasil.length === 0 &&
+                        <h3 className='other'>Tidak ditemukan data yang sesuai</h3>
+                    }
+                    {hasil.length > 0 &&
+                    <>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NIM TPB</th>
+                                    <th>NIM</th>
+                                    <th>Nama</th>
+                                    <th>Jurusan</th>
+                                    <th>Fakultas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {hasilPrediksiList()}
+                            </tbody>
+                        </table>
+                    </>
+                    }
+                    </>
+                }
+                {!correct &&
+                    <h3 className='other'>Masukan Input tidak valid</h3>
+                }    
+            </>
+            }   
             </div>
         </div>
     );
